@@ -4,19 +4,32 @@ public class LinkedList {
 	static class Node{
 		Node prev, next;
 		int val;
+		Node(int val){
+			this.val = val;
+		}
 	}
 	
-	public LinkedList() {
+	int size;
+	Node head, tail;
 		
-	}
-	
 	public void add(int item) {
+		if(head == null) {
+			head = tail = new Node(item);
+		}else {
+			tail.next = new Node(item);
+		}
+		size++;
+	}
+	
+	public int get(int index) {
+		//todo
+		return 0;
+	}
+	
+	public void remove(int index) {
 		
 	}
 	
-	private Node wrap(int item) {
-		return new Node()
-	}
 	/**
 	 * Checks if the given 2 linked lists converge with one another.
 	 * @param first First linked list

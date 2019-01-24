@@ -23,12 +23,16 @@ public class CircularQueue {
 		size = ++size % this.capacity;
 	}
 	
-	public int dequeue() throws Exception{
+	public int dequeue(){
 		if(size == 0) {
-			throw new Exception("Circular queue is empty");
+			throw new RuntimeException("Circular queue is empty");
 		}
 		int item = arr[head--];
 		size--;
 		return item;
+	}
+	
+	public int size() {
+		return size;
 	}
 }

@@ -1,18 +1,36 @@
 package ds;
 
+import java.util.Comparator;
+import java.util.HashMap;
+import java.util.LinkedHashMap;
 import java.util.List;
+import java.util.Map;
 import java.util.Properties;
+import java.util.stream.Collectors;
+import java.util.LinkedList;
 
 public class Graph {
 
 	public static class Node implements Comparable<Node>
 	{
-		final int nodeId;
+		public final int nodeId;
 		Properties nodeProperties;
-		Node(int nodeId, Properties properties)
+		
+		/**
+		 * 
+		 * @param nodeId - Id of this node. Nodes are identified by an integer 
+		 * between 0 and N-1 where N is the number of nodes in the graph. 
+		 * @param properties
+		 */
+		public Node(int nodeId, Properties properties)
 		{
 			this.nodeId = nodeId;
 			this.nodeProperties = properties;
+		}
+		
+		public int getNodeId()
+		{
+			return this.nodeId;
 		}
 		
 		@Override
@@ -41,7 +59,7 @@ public class Graph {
 				throw new IllegalArgumentException();
 			}
 			
-			if(node1.compareTo(node2) > 0) 
+			if(node1.compareTo(node2) > 0)
 			{
 				this.node1 = node1;
 				this.node2 = node2;
@@ -109,9 +127,54 @@ public class Graph {
 		}
 	}
 	
-	private List<IEdge> edges;
-	Graph(List<IEdge> edges)
+	
+	private final int[][] adjacencyMatrix;
+	private final Map<Integer, Node> nodes;	
+	
+	private Graph(int[][] adjacencyMatrix, Map<Integer, Node> nodes)
 	{
-		this.edges = edges;
+		this.adjacencyMatrix = adjacencyMatrix;
+		this.nodes = nodes;
+	}
+	
+	public List<Node> adjacentNodes(final Node node)
+	{
+		LinkedList<Node> adjNodes = new LinkedList<>();
+		for(int i = 0; i < adjacencyMatrix[node.nodeId].length; i++)
+		{
+			if(adjacencyMatrix[node.nodeId][i] >= 0) 
+			{
+				adjNodes.add(nodes.get(i));
+			}
+		}
+		return adjNodes;
+	}
+	
+	public static Graph constructGraphFromEdgeList(List<String> edges, List<Node> nodes) throws Exception
+	{	
+		Map<Integer, Node> nodesMap = nodes.stream()
+				.sorted(Comparator.comparingInt(Node::getNodeId).reversed())
+				.collect(Collectors.toMap(
+					Node::getNodeId, 
+					n -> n,
+					(oldValue, newValue) -> oldValue, // maybe of this is the case we should throw an exception
+					LinkedHashMap::new));
+		
+		//each entry is a comma separated list of 2 node Ids
+		int n = nodes.size(); 
+		int[][] adjacencyMatrix = new int[n][n];
+		for(String edgeStr : edges) 
+		{
+			String[] split = edgeStr.split(",");
+			int src = Integer.parseInt(split[0]);
+			int dst = Integer.parseInt(split[1]);
+			if(src >= n || dst >= n)
+			{
+				throw new Exception("Invalid node Id seen in the edge list");
+			}
+			adjacencyMatrix[src][dst] = 1;
+		}
+		
+		return new Graph(adjacencyMatrix, nodesMap);		
 	}
 }

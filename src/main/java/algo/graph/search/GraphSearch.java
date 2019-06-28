@@ -1,5 +1,7 @@
 package algo.graph.search;
 
-public interface GraphSearch {
+import ds.Graph;
 
+public interface GraphSearch {
+	Graph.Node Search(Graph g, int targetNodeId, Graph.Node start);
 }

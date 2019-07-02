@@ -1,5 +1,6 @@
 package ds;
 
+import java.util.Collection;
 import java.util.Comparator;
 import java.util.HashMap;
 import java.util.LinkedHashMap;
@@ -148,6 +149,10 @@ public class Graph {
 			}
 		}
 		return adjNodes;
+	}
+	
+	public Collection<Node> getAllNodes(){
+		return nodes.values();
 	}
 	
 	public static Graph constructGraphFromEdgeList(List<String> edges, List<Node> nodes) throws Exception
